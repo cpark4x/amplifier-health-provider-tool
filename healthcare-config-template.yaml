@@ -1,0 +1,23 @@
+# Add this to your ~/.amplifier/settings.yaml file under the 'config:' section
+
+# Healthcare provider search configuration
+healthcare:
+  # Primary insurance
+  primary_insurance:
+    company: "premera"  # Your primary insurance
+    plan_name: "Your Premera Plan Name"  # Optional - for your reference
+    
+  # Secondary insurance
+  secondary_insurance:
+    company: "aetna"  # Your secondary insurance
+    plan_name: "Your Aetna Plan Name"  # Optional - for your reference
+    
+  # Your location
+  location:
+    zip_code: "YOUR_ZIP_CODE"  # REQUIRED - Replace with your actual zip code
+    city: "Your City"  # Optional
+    state: "WA"  # Optional
+    
+  # Search preferences
+  preferences:
+    search_radius_miles: 10  # Default search radius

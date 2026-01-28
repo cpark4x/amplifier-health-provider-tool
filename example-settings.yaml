@@ -1,0 +1,30 @@
+# Example settings.yaml for Health Provider Search Tool
+# Copy this to ~/.amplifier/settings.yaml and fill in your information
+
+healthcare:
+  # Primary insurance
+  primary_insurance:
+    company: "premera"  # Options: "premera", "aetna"
+    plan_name: "Blue Cross Plan Name"  # Your specific plan
+    member_id: "ABC123456789"  # Optional - for your reference only
+    
+  # Secondary insurance (optional)
+  secondary_insurance:
+    company: "aetna"  # Options: "premera", "aetna"
+    plan_name: "Aetna Plan Name"
+    member_id: "XYZ987654321"  # Optional
+    
+  # Your location (required)
+  location:
+    zip_code: "98101"  # Replace with your zip code
+    city: "Seattle"  # Optional
+    state: "WA"  # Optional
+    
+  # Search preferences (optional)
+  preferences:
+    search_radius_miles: 10  # Default search radius
+    languages: ["English"]  # Preferred languages
+    accepting_new_patients: true  # Prefer providers accepting new patients
+
+# Note: This file should have restricted permissions (600)
+# Run: chmod 600 ~/.amplifier/settings.yaml
