@@ -1,100 +1,73 @@
-# Health Insurance Provider Search Tool
+# amplifier-health-provider-tool
 
-**Status: ⚠️ FAILED EXPERIMENT - Does Not Solve The Problem**
+**This project failed. That's the point.**
 
-This project was an attempt to build an AI-driven tool for finding healthcare providers that accept specific insurance (Premera Blue Cross and Aetna). **It does not work** for the intended use case.
+I tried to build an AI tool that finds healthcare providers accepting specific insurance (Premera Blue Cross + Aetna) near Issaquah, WA. It doesn't do that. This repo is published anyway — because documenting a failure clearly is more useful than pretending it didn't happen.
 
-## What Was Attempted
+---
 
-Build a tool that lets you say "find massage therapists that accept my Premera insurance" and get a useful answer.
+## What I Actually Learned (The Centerpiece)
+
+**1. AI can't fix a data availability problem.**
+I kept trying to find a clever technical workaround. There wasn't one. The data simply isn't free. That's a business constraint, not an engineering challenge — and no amount of prompting or API-chaining changes it.
+
+**2. Find the blocker before you build the interface.**
+I built a CLI, wrote documentation, and wired up NPI lookups before confirming the core data existed. Classic mistake. The right order: validate the critical dependency first, build everything else second.
+
+**3. Knowing when to stop is a product skill.**
+Iterating on a solvable problem is persistence. Iterating on an unsolvable one is just sunk cost. The call to archive this was the right product decision.
+
+**4. The documentation outlived the tool.**
+Used a doc-driven-dev workflow throughout. The vision doc, the epic, the honest failure analysis — all of it holds up. Good process produces good artifacts even when the product doesn't ship.
+
+---
 
 ## Why It Failed
 
-**The fundamental problem:** No free API exists for insurance network verification.
+**The fundamental blocker:** No free API exists for insurance network verification.
 
-### What We Tried:
+| Approach | What I Tried | Why It Failed |
+|---|---|---|
+| URL construction | Deep-link into insurance sites with pre-filled filters | JavaScript SPAs ignore URL parameters entirely |
+| CMS NPI Registry | Free government API for provider lookup | Returns name/address/phone — zero insurance data |
+| Web scraping | Parse insurance provider directories | Protected against scraping |
 
-1. **URL Construction** ❌
-   - Attempted to open insurance websites with pre-filled search parameters
-   - Reality: Insurance sites use JavaScript SPAs that ignore URL parameters
-   - Result: Opens to search page, but user must manually enter everything
+**The only solution that actually works:** [Ribbon Health API](https://h1.co/request-demo/) — $500–2,000/month, enterprise only.
 
-2. **CMS NPI Registry** ❌
-   - Free government API that returns provider lists
-   - Reality: Only provides basic directory info (name, address, phone)
-   - **Critical limitation:** NO insurance network data
-   - Result: Just a phone book - user must call each provider to verify insurance
+---
 
-### The Only Solution That Works:
+## What Got Built (Despite Everything)
 
-**Ribbon Health API** (enterprise pricing, contact sales)
-- https://h1.co/request-demo/
-- Estimated cost: $500-2000/month
-- This is the ONLY service with programmatic insurance network verification
+A Python CLI that searches the CMS NPI Registry by specialty near a zip code. Supports fuzzy specialty lookup ("contacts" → optometrist, "chiro" → chiropractor). Opens insurance websites in browser tabs for manual search.
 
-## What Actually Got Built
+Honest assessment: *slightly faster than Google, basically just Yelp but worse.*
 
-### Working Components:
-
-**1. NPI Provider Search** (`search_providers.py`)
 ```bash
 python3 search_providers.py "massage therapy" --limit 10
 ```
-Returns list of providers with:
-- Name, specialty, address, phone, license
-- **Does NOT verify insurance acceptance**
-- User must call each provider manually
 
-**2. Insurance Website Launcher** (`--mode insurance`)
-```bash
-python3 search_providers.py "massage therapy" --mode insurance
-```
-Opens Premera/Aetna search pages (no pre-filled parameters)
+It works. It just doesn't solve the problem I wanted to solve.
 
-### What This Actually Provides:
+---
 
-- Slightly faster than Google search
-- Organized provider list with phone numbers
-- **Still requires manual insurance verification for every provider**
-- Basically just Yelp but worse
+## Why This Is Public
 
-## Documentation (The Only Success)
+Most builders quietly delete the repos that didn't work out. I think that's wrong.
 
-Used the doc-driven-dev workflow to create:
-- `docs/01-vision/VISION.md` - Strategic vision (problems, positioning, roadmap)
-- `docs/02-requirements/epics/01-provider-search.md` - Epic documentation
-- Complete documentation structure following templates
+This repo demonstrates something that matters more than the tool itself: the ability to find a real blocker, name it clearly, document what was tried, and make the call to stop. That's product discovery. It's harder than it sounds, and it doesn't always produce something shippable.
 
-**This documentation process worked great.** The tool itself did not.
+Publishing it is intentional. The learning value is higher than zero. The product value is not.
 
-## Installation (If You Want to Try It Anyway)
+---
 
-```bash
-cd ~/amplifier-health-provider-tool
-python3 search_providers.py "massage therapy" --limit 10
-```
+## Built By
 
-Configuration in the script at line 15 (CONFIG dictionary).
+**Chris Park** — Senior PM, Microsoft Office of the CTO, AI Incubation.
 
-## Lessons Learned
+17 years in product. Brand: *"PM who actually builds — including the things that don't work."*
 
-1. **Validate APIs exist before building** - Should have confirmed NPI Registry includes insurance data
-2. **Don't build around assumptions** - Assumed insurance sites support URL parameters (they don't)
-3. **Be honest about limitations early** - Should have said "this needs a paid API" from the start
-4. **Testing matters** - Should have tested with real API calls before building the interface
-
-## If You Actually Want This Feature
-
-**Pay for Ribbon Health API:**
-- Request demo: https://h1.co/request-demo/
-- Ask about Premera and Aetna support
-- Get pricing quote
-- Integrate their API (replace NPI client with Ribbon client)
+---
 
 ## License
 
-MIT License
-
-## Status
-
-**Archived** - Does not solve the intended problem without paid API access.
+MIT
